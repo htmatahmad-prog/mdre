@@ -1,0 +1,53 @@
+# Environment variables
+.env
+config/.env
+*.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.cache/
+
+# Cargo/Rust
+.cargo/
+target/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Logs
+*.log
+install_log_*.log
+install_termux_log_*.log
+install_fixed_log_*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+.bash_history
+.bashrc
+.python_history
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup files
+*.save
+*.backup
+*.bak
+
+# Local lib
+.local/
+
+# API Keys (security)
+*_api_key*
+*_secret*
+credentials.json
