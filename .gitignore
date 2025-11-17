@@ -1,37 +1,43 @@
-# Environment variables
-.env
-config/.env
-*.env
+# Sensitive directories
+.claude/
+.npm/
+.config/
 
-# Python cache
+# API Keys and secrets
+.env
+.env.*
+!.env.template
+secrets.json
+credentials.json
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
-*.pyd
-.Python
-.cache/
+*.egg-info/
+dist/
+build/
+*.egg
 
-# Cargo/Rust
-.cargo/
-target/
+# Audio/Image generated files
+*.mp3
+generated_*.png
+speech_*.mp3
 
-# Virtual environments
-venv/
-env/
-ENV/
+# Node
+node_modules/
+package-lock.json
 
-# Logs
-*.log
-install_log_*.log
-install_termux_log_*.log
-install_fixed_log_*.log
+# Backup files
+*.backup
+*.bak
+*~
 
 # OS files
 .DS_Store
 Thumbs.db
-.bash_history
-.bashrc
-.python_history
+.Spotlight-V100
+.Trashes
 
 # IDE
 .vscode/
@@ -39,15 +45,9 @@ Thumbs.db
 *.swp
 *.swo
 
-# Backup files
-*.save
-*.backup
-*.bak
+# Logs
+*.log
+npm-debug.log*
 
-# Local lib
-.local/
-
-# API Keys (security)
-*_api_key*
-*_secret*
-credentials.json
+# Local history
+.local-history/
