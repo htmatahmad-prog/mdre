@@ -8,6 +8,8 @@
 from flask import Flask, render_template_string, request, jsonify, send_from_directory
 from flask_cors import CORS
 import os
+import json
+from pathlib import Path
 from ai_workspace_pro import AIWorkspacePro
 import threading
 import socket
@@ -19,6 +21,17 @@ CORS(app)
 # Global workspace
 workspace = None
 workspace_lock = threading.Lock()
+
+def load_saved_keys():
+    """تحميل المفاتيح المحفوظة"""
+    config_file = Path.home() / "config_keys.json"
+    if config_file.exists():
+        try:
+            with open(config_file, 'r') as f:
+                return json.load(f)
+        except:
+            pass
+    return {}
 
 def get_local_ip():
     """الحصول على IP المحلي"""
@@ -617,9 +630,18 @@ if __name__ == '__main__':
     local_ip = get_local_ip()
     port = 5000
 
+    # فحص المفاتيح المحفوظة
+    saved_keys = load_saved_keys()
+    has_keys = any(saved_keys.values()) if saved_keys else False
+
     print("\n" + "="*70)
     print("🌐 AI Workspace Pro - تطبيق الويب")
     print("="*70)
+
+    if not has_keys:
+        print("\n⚠️  تحذير: لم يتم العثور على مفاتيح API محفوظة!")
+        print("   شغّل: python3 setup_keys.py  لإعداد المفاتيح\n")
+
     print(f"\n📱 على الهاتف/الكمبيوتر في نفس الشبكة:")
     print(f"   http://{local_ip}:{port}")
     print(f"\n💻 على هذا الجهاز:")

@@ -33,14 +33,32 @@ class AIWorkspacePro:
         print("✅ تم التحميل بنجاح!\n")
 
     def load_keys(self):
-        """تحميل مفاتيح API"""
-        self.openai_key = os.getenv('OPENAI_API_KEY')
-        self.google_key = os.getenv('GOOGLE_API_KEY')
-        self.anthropic_key = os.getenv('ANTHROPIC_API_KEY')
-        self.serper_key = os.getenv('SERPER_API_KEY')
-        self.tavily_key = os.getenv('TAVILY_API_KEY')
+        """تحميل مفاتيح API من ملف الإعدادات أو متغيرات البيئة"""
+        # محاولة التحميل من ملف الإعدادات أولاً
+        config_file = Path.home() / "config_keys.json"
+        keys = {}
+
+        if config_file.exists():
+            try:
+                with open(config_file, 'r') as f:
+                    keys = json.load(f)
+                print("✅ تم تحميل المفاتيح من الملف المحفوظ")
+            except:
+                pass
+
+        # استخدام المفاتيح من الملف أو متغيرات البيئة
+        self.openai_key = keys.get('openai') or os.getenv('OPENAI_API_KEY')
+        self.google_key = keys.get('google') or os.getenv('GOOGLE_API_KEY')
+        self.anthropic_key = keys.get('anthropic') or os.getenv('ANTHROPIC_API_KEY')
+        self.serper_key = keys.get('serper') or os.getenv('SERPER_API_KEY')
+        self.tavily_key = keys.get('tavily') or os.getenv('TAVILY_API_KEY')
         self.elevenlabs_key = os.getenv('ELEVENLABS_API_KEY')
         self.replicate_key = os.getenv('REPLICATE_API_KEY')
+
+        # إذا لم توجد مفاتيح، اعرض رسالة
+        if not (self.openai_key or self.google_key or self.anthropic_key):
+            print("\n⚠️  تحذير: لم يتم العثور على مفاتيح API!")
+            print("   شغّل: python3 setup_keys.py  لإعداد المفاتيح\n")
 
     def init_models(self):
         """تهيئة جميع النماذج"""
