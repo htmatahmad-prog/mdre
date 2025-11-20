@@ -8,7 +8,8 @@ import json
 import os
 from pathlib import Path
 
-CONFIG_FILE = Path.home() / "config_keys.json"
+# مسار ملف حفظ المفاتيح (يمكن تخصيصه عبر متغير البيئة API_KEYS_FILE)
+CONFIG_FILE = Path(os.getenv('API_KEYS_FILE', Path.home() / "config_keys.json"))
 
 def load_keys():
     """تحميل المفاتيح المحفوظة"""
@@ -54,14 +55,39 @@ def setup_keys():
     if anthropic:
         keys['anthropic'] = anthropic
 
+    # Groq
+    print("\n4️⃣  Groq API Key (للنماذج السريعة):")
+    print("   احصل عليه من: https://console.groq.com")
+    groq = input("   أدخل المفتاح (أو Enter للتخطي): ").strip()
+    if groq:
+        keys['groq'] = groq
+
+    # Minimax
+    print("\n5️⃣  Minimax API Key (للنماذج المتقدمة):")
+    print("   احصل عليه من: https://api.minimax.io")
+    minimax = input("   أدخل المفتاح (أو Enter للتخطي): ").strip()
+    if minimax:
+        keys['minimax'] = minimax
+        # Group ID مطلوب لـ Minimax
+        group_id = input("   أدخل Minimax Group ID: ").strip()
+        if group_id:
+            keys['minimax_group_id'] = group_id
+
+    # Cohere
+    print("\n6️⃣  Cohere API Key (للمهام التجارية):")
+    print("   احصل عليه من: https://dashboard.cohere.ai")
+    cohere = input("   أدخل المفتاح (أو Enter للتخطي): ").strip()
+    if cohere:
+        keys['cohere'] = cohere
+
     # Serper (اختياري)
-    print("\n4️⃣  Serper API Key (للبحث - اختياري):")
+    print("\n7️⃣  Serper API Key (للبحث - اختياري):")
     serper = input("   أدخل المفتاح (أو Enter للتخطي): ").strip()
     if serper:
         keys['serper'] = serper
 
     # Tavily (اختياري)
-    print("\n5️⃣  Tavily API Key (للبحث - اختياري):")
+    print("\n8️⃣  Tavily API Key (للبحث - اختياري):")
     tavily = input("   أدخل المفتاح (أو Enter للتخطي): ").strip()
     if tavily:
         keys['tavily'] = tavily
@@ -77,14 +103,23 @@ def check_and_setup():
     """فحص وإعداد المفاتيح إذا لزم الأمر"""
     keys = load_keys()
 
-    if not keys or not any(keys.values()):
+    # التحقق من وجود مفاتيح حقيقية (وليس placeholders)
+    valid_keys = {}
+    for key, value in keys.items():
+        if value and not value.startswith('your_') and value != 'your_' + key + '_api_key_here':
+            valid_keys[key] = value
+
+    if not keys or not valid_keys:
         print("\n🔍 لم يتم العثور على مفاتيح محفوظة...")
         keys = setup_keys()
     else:
         print("\n✅ تم تحميل المفاتيح المحفوظة!")
-        print(f"   OpenAI: {'✓' if keys.get('openai') else '✗'}")
-        print(f"   Google: {'✓' if keys.get('google') else '✗'}")
-        print(f"   Anthropic: {'✓' if keys.get('anthropic') else '✗'}")
+        print(f"   OpenAI: {'✓' if valid_keys.get('openai') else '✗'}")
+        print(f"   Google: {'✓' if valid_keys.get('google') else '✗'}")
+        print(f"   Anthropic: {'✓' if valid_keys.get('anthropic') else '✗'}")
+        print(f"   Groq: {'✓' if valid_keys.get('groq') else '✗'}")
+        print(f"   Minimax: {'✓' if valid_keys.get('minimax') else '✗'}")
+        print(f"   Cohere: {'✓' if valid_keys.get('cohere') else '✗'}")
 
     return keys
 
